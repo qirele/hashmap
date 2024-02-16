@@ -140,7 +140,64 @@ function HashMap() {
     buckets = Array(bucketSize).fill(); // garbage collector do your job
   }
 
-  return { hash, set, get, has, remove, length, clear };
+  const keys = () => {
+    let arr = [];
+
+    for (let i = 0; i < buckets.length; i++) {
+      if (buckets[i] === undefined) continue;
+
+      // traverse
+      let list = buckets[i];
+      let current = list.head();
+      while (current !== null) {
+        arr.push(current.value.key);
+        current = current.next;
+      }
+
+    }
+
+    return arr;
+  }
+
+  const values = () => {
+    let arr = [];
+
+    for (let i = 0; i < buckets.length; i++) {
+      if (buckets[i] === undefined) continue;
+
+      // traverse
+      let list = buckets[i];
+      let current = list.head();
+      while (current !== null) {
+        arr.push(current.value.value);
+        current = current.next;
+      }
+
+    }
+
+    return arr;
+  }
+
+  const entries = () => {
+    let arr = [];
+
+    for (let i = 0; i < buckets.length; i++) {
+      if (buckets[i] === undefined) continue;
+
+      // traverse
+      let list = buckets[i];
+      let current = list.head();
+      while (current !== null) {
+        arr.push([current.value.key, current.value.value]);
+        current = current.next;
+      }
+
+    }
+
+    return arr;
+  }
+
+  return { hash, set, get, has, remove, length, clear, keys, values, entries };
 }
 
 const hashmap = HashMap();
@@ -148,3 +205,7 @@ const hashmap = HashMap();
 hashmap.set("Kiril", "Kawasaki");
 hashmap.set("Carlo", "Rodriguez");
 hashmap.set("Brohehem", "DOooodewicz");
+
+console.log(hashmap.keys());
+console.log(hashmap.values());
+console.log(hashmap.entries());
