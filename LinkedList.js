@@ -45,6 +45,8 @@ export default function LinkedList() {
   }
 
   const at = (index) => {
+    if (index < 0) return -1;
+
     let cur = list;
     let counter = 0;
     while (cur !== null) {
@@ -123,6 +125,7 @@ export default function LinkedList() {
     if (size() >= 2) {
       if (index === 0) {
         list = list.next;
+        return;
       }
 
       const prev = at(index - 1);

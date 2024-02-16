@@ -2,7 +2,7 @@ import LinkedList from './LinkedList.js';
 
 function HashMap() {
   let bucketSize = 16;
-  let buckets = [];
+  let buckets = Array(bucketSize).fill();
 
   const hash = (keyString) => {
     let hashCode = 0;
@@ -96,13 +96,55 @@ function HashMap() {
     return false; // not found the key within the linked list
   }
 
-  return { hash, set, get, has };
+  const remove = (key) => {
+    const index = hash(key);
+    if (index < 0 || index >= bucketSize) {
+      throw new Error("Trying to access index out of bound");
+    }
+
+    if (buckets[index] === undefined) {
+      // no key here and no value here
+      return false;
+    }
+
+    // traverse linked list
+    let list = buckets[index];
+    let current = list.head();
+    let counter = 0;
+    while (current !== null) {
+      if (key === current.value.key) { // key found within linked list
+        // remove the entry
+        list.removeAt(counter);
+        return true;
+      }
+
+      current = current.next;
+      counter++;
+    }
+
+    return false; // not found the key within the linked list
+  }
+
+  const length = () => {
+    let counter = 0;
+    for (let i = 0; i < buckets.length; i++) {
+      if (buckets[i] === undefined) continue;
+
+      counter += buckets[i].size();
+    }
+
+    return counter;
+  }
+
+  const clear = () => {
+    buckets = Array(bucketSize).fill(); // garbage collector do your job
+  }
+
+  return { hash, set, get, has, remove, length, clear };
 }
 
 const hashmap = HashMap();
 
 hashmap.set("Kiril", "Kawasaki");
 hashmap.set("Carlo", "Rodriguez");
-
-console.log(hashmap.get("Carlo"));
-console.log(hashmap.has("Carlo"))
+hashmap.set("Brohehem", "DOooodewicz");
