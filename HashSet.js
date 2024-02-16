@@ -1,7 +1,6 @@
 import LinkedList from './LinkedList.js';
-import HashSet from './HashSet.js';
 
-function HashMap() {
+export default function HashSet() {
   let bucketSize = 16;
   let buckets = Array(bucketSize).fill();
   const loadFactor = 0.75;
@@ -18,16 +17,16 @@ function HashMap() {
     return hashCode;
   }
 
-  const set = (key, value) => {
+  const set = (key) => {
     const index = hash(key);
     if (index < 0 || index >= bucketSize) {
       throw new Error("Trying to access index out of bound");
     }
 
     if (buckets[index] === undefined) {
-      // if bucket empty, create linked list with head equals to Node({key: key, value: value})
+      // if bucket empty, create linked list with head equals to Node(key)
       const list = LinkedList();
-      list.append({ key: key, value: value });
+      list.append(key);
       buckets[index] = list;
 
       console.log(_capacity());
@@ -42,16 +41,16 @@ function HashMap() {
     let list = buckets[index];
     let current = list.head();
     while (current !== null) {
-      if (key === current.value.key) {
-        current.value.value = value;
+      if (key === current.value) {
+        current.value = key;
       }
 
       current = current.next;
     }
 
-    // else append { key, value } to the end of the list
+    // else append { key } to the end of the list
     let tail = list.tail();
-    tail.next = { value: { key, value }, next: null };
+    tail.next = { value: key, next: null };
   }
 
   const get = (key) => {
@@ -69,8 +68,8 @@ function HashMap() {
     let list = buckets[index];
     let current = list.head();
     while (current !== null) {
-      if (key === current.value.key) { // key found within linked list
-        return current.value.value;
+      if (key === current.value) { // key found within linked list
+        return current.value;
       }
 
       current = current.next;
@@ -94,7 +93,7 @@ function HashMap() {
     let list = buckets[index];
     let current = list.head();
     while (current !== null) {
-      if (key === current.value.key) { // key found within linked list
+      if (key === current.value) { // key found within linked list
         return true;
       }
 
@@ -120,7 +119,7 @@ function HashMap() {
     let current = list.head();
     let counter = 0;
     while (current !== null) {
-      if (key === current.value.key) { // key found within linked list
+      if (key === current.value) { // key found within linked list
         // remove the entry
         list.removeAt(counter);
         return true;
@@ -159,50 +158,11 @@ function HashMap() {
       let list = buckets[i];
       let current = list.head();
       while (current !== null) {
-        arr.push(current.value.key);
+        arr.push(current.value);
         current = current.next;
       }
 
     }
-
-    return arr;
-  }
-
-  const values = () => {
-    let arr = [];
-
-    for (let i = 0; i < buckets.length; i++) {
-      if (buckets[i] === undefined) continue;
-
-      // traverse
-      let list = buckets[i];
-      let current = list.head();
-      while (current !== null) {
-        arr.push(current.value.value);
-        current = current.next;
-      }
-
-    }
-
-    return arr;
-  }
-
-  const entries = () => {
-    let arr = [];
-
-    for (let i = 0; i < buckets.length; i++) {
-      if (buckets[i] === undefined) continue;
-
-      // traverse
-      let list = buckets[i];
-      let current = list.head();
-      while (current !== null) {
-        arr.push([current.value.key, current.value.value]);
-        current = current.next;
-      }
-
-    }
-
 
     return arr;
   }
@@ -234,22 +194,5 @@ function HashMap() {
     buckets = newBuckets;
   }
 
-  return { hash, set, get, has, remove, length, clear, keys, values, entries };
+  return { hash, set, get, has, remove, length, clear, keys };
 }
-
-const hashmap = HashMap();
-
-hashmap.set("Kiril", "Kawasaki");
-hashmap.set("Carlo", "Rodriguez");
-hashmap.set("Brohehem", "DOooodewicz");
-
-console.log(hashmap.keys());
-console.log(hashmap.values());
-console.log(hashmap.entries());
-
-const hashset = HashSet();
-hashset.set("Bruh");
-hashset.set("Rooro");
-hashset.set("Nonoen");
-
-console.log(hashset.keys());
