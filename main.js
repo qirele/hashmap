@@ -3,6 +3,7 @@ import LinkedList from './LinkedList.js';
 function HashMap() {
   let bucketSize = 16;
   let buckets = Array(bucketSize).fill();
+  const loadFactor = 0.75;
 
   const hash = (keyString) => {
     let hashCode = 0;
@@ -27,6 +28,12 @@ function HashMap() {
       const list = LinkedList();
       list.append({ key: key, value: value });
       buckets[index] = list;
+
+      console.log(_capacity());
+      if (_capacity() >= loadFactor) {
+        // grow buckets size
+        _growBuckets();
+      }
       return;
     }
 
@@ -137,6 +144,7 @@ function HashMap() {
   }
 
   const clear = () => {
+    bucketSize = 16;
     buckets = Array(bucketSize).fill(); // garbage collector do your job
   }
 
@@ -194,7 +202,35 @@ function HashMap() {
 
     }
 
+
     return arr;
+  }
+
+  // private methods
+  const _capacity = () => {
+    let counter = 0;
+    for (let i = 0; i < buckets.length; i++) {
+      if (buckets[i] === undefined) continue;
+      counter++;
+    }
+
+    return counter / bucketSize;
+  }
+
+  const _growBuckets = () => {
+    bucketSize *= 2;
+
+    // create new array
+    let newBuckets = Array(bucketSize).fill();
+
+    // copy nodes to the new buckets
+    for (let i = 0; i < buckets.length; i++) {
+      if (buckets[i] === undefined) continue;
+
+      newBuckets[i] = buckets[i];
+    }
+
+    buckets = newBuckets;
   }
 
   return { hash, set, get, has, remove, length, clear, keys, values, entries };
